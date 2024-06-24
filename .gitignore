@@ -24,3 +24,6 @@ yarn-error.log*
 
 #React 
 node_modules
+
+#Advpl/tlpp
+.vscode
