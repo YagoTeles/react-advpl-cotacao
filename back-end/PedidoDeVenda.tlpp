@@ -1,0 +1,37 @@
+#include 'fw-tlpp-core.th'
+#include 'fw-tlpp-rest.th'
+
+@GET("compras/pedidos-de-venda")
+Function u_GetPedidoDeVenda()
+
+  Local cQuery as character
+  Local aResposta := {}
+  Local oJson     := JsonObject():New()
+  Local oResposta := JsonObject():New()
+ 
+  cQuery := "SELECT C5_FILIAL,C5_NUM,SUM(C6_QTDVEN) AS QUANTIDADE, SUM(C6_VALOR) AS VALORTOTAL  " 
+  cQuery += "FROM "+RetSqlName("SC5")+" SC5 " 
+  cQuery += "INNER JOIN "+RetSqlName("SC6")+" SC6 ON C5_FILIAL=C6_FILIAL AND C5_NUM=C6_NUM " 
+  cQuery += "WHERE SC5.D_E_L_E_T_=' '" 
+  cQuery += "AND SC6.D_E_L_E_T_=' ' " 
+  cQuery += "GROUP BY C5_FILIAL,C5_NUM " 
+  cAlias := MPSysOpenQuery(cQuery)
+
+  (cAlias)->(dbGoTop())
+  While (cAlias)->(!EOF())
+    oJson     := JsonObject():New()
+    oJson["filial"]     := AllTrim((cAlias)->C5_FILIAL)
+    oJson["numero"]     := AllTrim((cAlias)->C5_NUM)
+    oJson["cliente"]    := AllTrim((cAlias)->C5_CLIENTE)
+    oJson["quantidade"] := Transform((cAlias)->QUANTIDADE,"@E 999,999.99")
+    oJson["valor"]      := Transform((cAlias)->VALORTOTAL,"@E 999,999.99")
+
+    AAdd(aResposta, oJson)
+    (cAlias)->(DbSkip())
+  ENDDO
+  (cAlias)->(DbCloseArea())
+
+  oResposta:set(aResposta)
+  oRest:setStatusCode(200)
+  oRest:setResponse(oResposta)
+Return .T.

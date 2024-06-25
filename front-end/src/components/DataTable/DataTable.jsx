@@ -29,7 +29,7 @@ const columns = [
 ];
 
 const rows = [
-    {filial:"010101",numero:"000001",cliente:"Cliente Teste"},
+    {filial:"010101",numero:"000001",cliente:"Cliente Teste",quantidade:0,valor:0},
     {filial:"010101",numero:"000002",cliente:"Cliente Teste"},
     {filial:"010101",numero:"000002",cliente:"Cliente Teste"}
 ];
