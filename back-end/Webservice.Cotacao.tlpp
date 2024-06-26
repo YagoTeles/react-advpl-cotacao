@@ -19,7 +19,7 @@ Function u_GetPedidoDeVenda()
 
   (cAlias)->(dbGoTop())
   While (cAlias)->(!EOF())
-    oJson     := JsonObject():New()
+    oJson  := JsonObject():New()
     oJson["filial"]     := AllTrim((cAlias)->C5_FILIAL)
     oJson["numero"]     := AllTrim((cAlias)->C5_NUM)
     oJson["cliente"]    := AllTrim((cAlias)->C5_CLIENTE)

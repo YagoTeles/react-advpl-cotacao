@@ -1,6 +1,6 @@
 import React from 'react';
 import {Route,BrowserRouter,Routes,Navigate} from "react-router-dom";
-import CreatePv from '../pages/createpv/CreatePv';
+import GeraCotacao from '../pages/GeraCotacao/GeraCotacao';
 import NavBar from '../components/Navbar/Navbar';
 
 function RouteApp() {
@@ -8,8 +8,8 @@ function RouteApp() {
     return (  
     <BrowserRouter>     
         <Routes>
-            <Route path="/" element = {<Navigate to="/pedido-de-venda" />}/> 
-            <Route path="/pedido-de-venda" element = {<NavBar><CreatePv/></NavBar>}/>     
+            <Route path="/" element = {<Navigate to="/gera-cotacao" />}/> 
+            <Route path="/gera-cotacao" element = {<NavBar><GeraCotacao/></NavBar>}/>     
         </Routes>            
     </BrowserRouter> 
     );
