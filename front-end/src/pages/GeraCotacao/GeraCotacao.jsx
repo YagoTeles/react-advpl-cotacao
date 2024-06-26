@@ -6,6 +6,7 @@ import KeyboardArrowDownOutlinedIcon from '@mui/icons-material/KeyboardArrowDown
 import TableCotacao from "../../components/TableCotacao/TableCotacao";
 import MenuItem from '@mui/material/MenuItem';
 import './geracotacao.css';
+import { useAuth } from '../../contexts/AuthContext';
 const data = [
   {
     item: 1,
@@ -49,9 +50,17 @@ const tpfrete = [
     value: 'FOB',
     label: 'FOB - Free On Board',
   },
+  {
+    value: '',
+    label: '',
+  },
 ];
 
 function GeraCotacao() {
+  const { userData  } = useAuth();
+
+  const infos = userData[0] 
+  
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -66,6 +75,7 @@ function GeraCotacao() {
   const [total, setTotal] = useState(0)
 
   const toggleCollapse = (section) => {
+    console.log(userData)
     setCollapsed((prev) => ({
       ...prev,
       [section]: !prev[section],
@@ -111,11 +121,11 @@ function GeraCotacao() {
         </Button>
         <Collapse in={!collapsed.fornecedor}>
           <Card sx={{ padding: 1, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6">Nome: </Typography>
-            <Typography variant="h6">Telefone: </Typography>
+            <Typography variant="h6">Nome: {infos.nome}</Typography>
+            <Typography variant="h6">Telefone: {infos.telefone} </Typography>
             <Typography variant="h6">Endereço: </Typography>
-            <Typography variant="h6">Cidade: </Typography>
-            <Typography variant="h6">Estado: </Typography>
+            <Typography variant="h6">Cidade: {infos.cidade}</Typography>
+            <Typography variant="h6">Estado: {infos.estado}</Typography>
           </Card>
         </Collapse>
         <Button
@@ -171,7 +181,7 @@ function GeraCotacao() {
                 id="tipofrete"
                 select
                 label="Tipo de frete"
-                defaultValue="001"
+                defaultValue="CIF"
                 variant="standard"
                 size="small"
                 sx={{width:198.18}}

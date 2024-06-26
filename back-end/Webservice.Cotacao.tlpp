@@ -11,7 +11,7 @@ Function u_getDadosCotacao()
   Local cHash  as character
   Local aBindParam    as array
   Local oParams := oRest:getQueryRequest()
-
+   
   IF oParams:HasProperty("hashcotacao")
     cHash := oParams["hashcotacao"]
 
@@ -23,10 +23,14 @@ Function u_getDadosCotacao()
     aBindParam := {cHash}
 
     cAlias := MPSysOpenQuery(cQuery,,,,aBindParam)
-    
+    DbSelectArea("SA2")
+    SA2->(DbSetOrder(1))
+    SA2->(DbGoTop())
     (cAlias)->(dbGoTop())
     While (cAlias)->(!EOF())
         oJson := JsonObject():New()
+
+        SA2->(DbSeek(FWxFilial("SA2") + (cAlias)->C8_FORNECE))
 
         oJson["filial"]   := (cAlias)->C8_FILIAL
         oJson["num"]      := (cAlias)->C8_NUM
@@ -39,6 +43,11 @@ Function u_getDadosCotacao()
         oJson["loja"]     := (cAlias)->C8_LOJA
         oJson["emissao"]  := (cAlias)->C8_EMISSAO
         oJson["validade"] := (cAlias)->C8_VALIDA
+        oJson["nome"]     := Alltrim(SA2->A2_NOME)
+        oJson["telefone"] := Alltrim(SA2->A2_TEL)
+        oJson["endereco"] := Alltrim(SA2->A2_END)
+        oJson["cidade"]   := Alltrim(SA2->A2_COD_MUN)
+        oJson["estado"]   := Alltrim(SA2->A2_EST)
 
         aAdd(aResposta,oJson)
         FreeObj(oJson)
@@ -48,7 +57,10 @@ Function u_getDadosCotacao()
   ENDIF
   
   oResposta:set(aResposta)
-  oRest:setStatusCode(200)
+  nStatus := IIF(len(aResposta) > 0,200,204)
+  oRest:setStatusCode(nStatus)
   oRest:setResponse(oResposta)
 
 Return .T.
+
+
