@@ -1,2 +1,2 @@
 # react-advpl-cria-pv
-Criaçao  pedido de venda utilizando react + advpl/tlpp
+Envio da cotação de compra ao fornecedor
