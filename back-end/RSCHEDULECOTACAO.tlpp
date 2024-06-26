@@ -1,0 +1,36 @@
+#include 'fw-tlpp-core.th'
+
+User Function RSCHEDULECOTACAO()
+    Local cQuery as character
+    Local cAlias as character
+    Local cChave as character
+    Local cIndex as character
+
+    cQuery := "SELECT DISTINCT C8_FILIAL,C8_NUM FROM "+RetSqlName("SC8")+" SC8 " 
+    cQuery += "WHERE SC8.D_E_L_E_T_=' ' " 
+    cQuery += "AND C8_YSEND = ' ' "  
+
+    cAlias := MPSysOpenQuery(cQuery)
+
+    DbSelectArea("SC8")
+    SC8->(DbSetOrder(1))
+    SC8->(DbGoTop())
+    (cAlias)->(dbGoTop())
+    While (cAlias)->(!EOF())
+        cIndex := (cAlias)->C8_FILIAL + (cAlias)->C8_NUM
+
+        SC8->(DbSeek(cIndex))
+
+        cChave := MD5(SC8->(C8_FILIAL+C8_NUM+C8_FORNECE+C8_LOJA))
+
+        While SC8->(!EOF()) .AND. SC8->(C8_FILIAL+C8_NUM) == cIndex
+            RecLock("SC8", .F.)
+                SC8->C8_YHASH := cChave
+            SC8->(MsUnlock())
+
+            SC8->(DbSkip())
+        ENDDO
+        (cAlias)->(DbSkip())
+    ENDDO
+    (cAlias)->(DbCloseArea())
+Return

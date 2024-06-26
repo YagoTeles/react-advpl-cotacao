@@ -13,8 +13,8 @@ const TableCotacao = ({data}) => {
             <TableCell>Produto</TableCell>
             <TableCell>Quantidade</TableCell>
             <TableCell>UM</TableCell>
-            <TableCell>Vlr. Unit</TableCell>
-            <TableCell>Desc</TableCell>
+            <TableCell>Vlr. Unitário</TableCell>
+            <TableCell>Desconto</TableCell>
             <TableCell>Vlr. Total</TableCell>
             <TableCell>Dt. Entrega</TableCell>
           </TableRow>

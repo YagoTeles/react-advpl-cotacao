@@ -1,37 +1,54 @@
 #include 'fw-tlpp-core.th'
 #include 'fw-tlpp-rest.th'
 
-@GET("compras/pedidos-de-venda")
-Function u_GetPedidoDeVenda()
+@GET("compras/dados-cotacao")
+Function u_getDadosCotacao()
 
   Local cQuery as character
   Local aResposta := {}
-  Local oJson     := JsonObject():New()
+  Local oJson     
   Local oResposta := JsonObject():New()
- 
-  cQuery := "SELECT C5_FILIAL,C5_NUM,SUM(C6_QTDVEN) AS QUANTIDADE, SUM(C6_VALOR) AS VALORTOTAL  " 
-  cQuery += "FROM "+RetSqlName("SC5")+" SC5 " 
-  cQuery += "INNER JOIN "+RetSqlName("SC6")+" SC6 ON C5_FILIAL=C6_FILIAL AND C5_NUM=C6_NUM " 
-  cQuery += "WHERE SC5.D_E_L_E_T_=' '" 
-  cQuery += "AND SC6.D_E_L_E_T_=' ' " 
-  cQuery += "GROUP BY C5_FILIAL,C5_NUM " 
-  cAlias := MPSysOpenQuery(cQuery)
+  Local cHash  as character
+  Local aBindParam    as array
+  Local oParams := oRest:getQueryRequest()
 
-  (cAlias)->(dbGoTop())
-  While (cAlias)->(!EOF())
-    oJson  := JsonObject():New()
-    oJson["filial"]     := AllTrim((cAlias)->C5_FILIAL)
-    oJson["numero"]     := AllTrim((cAlias)->C5_NUM)
-    oJson["cliente"]    := AllTrim((cAlias)->C5_CLIENTE)
-    oJson["quantidade"] := Transform((cAlias)->QUANTIDADE,"@E 999,999.99")
-    oJson["valor"]      := Transform((cAlias)->VALORTOTAL,"@E 999,999.99")
+  IF oParams:HasProperty("hashcotacao")
+    cHash := oParams["hashcotacao"]
 
-    AAdd(aResposta, oJson)
-    (cAlias)->(DbSkip())
-  ENDDO
-  (cAlias)->(DbCloseArea())
+    cQuery := "SELECT * FROM "+RetSqlName("SC8")+" SC8 " 
+    cQuery += "WHERE C8_YHASH = ? " 
+    cQuery += "AND SC8.D_E_L_E_T_=' ' " 
+    cQuery += "ORDER BY C8_ITEM "
 
+    aBindParam := {cHash}
+
+    cAlias := MPSysOpenQuery(cQuery,,,,aBindParam)
+    
+    (cAlias)->(dbGoTop())
+    While (cAlias)->(!EOF())
+        oJson := JsonObject():New()
+
+        oJson["filial"]   := (cAlias)->C8_FILIAL
+        oJson["num"]      := (cAlias)->C8_NUM
+        oJson["produto"]  := (cAlias)->C8_PRODUTO
+        oJson["um"]       := (cAlias)->C8_UM
+        oJson["quant"]    := (cAlias)->C8_QUANT
+        oJson["preco"]    := (cAlias)->C8_PRECO
+        oJson["total"]    := (cAlias)->C8_TOTAL
+        oJson["fornece"]  := (cAlias)->C8_FORNECE
+        oJson["loja"]     := (cAlias)->C8_LOJA
+        oJson["emissao"]  := (cAlias)->C8_EMISSAO
+        oJson["validade"] := (cAlias)->C8_VALIDA
+
+        aAdd(aResposta,oJson)
+        FreeObj(oJson)
+        (cAlias)->(DbSkip())
+    ENDDO
+    (cAlias)->(DbCloseArea())
+  ENDIF
+  
   oResposta:set(aResposta)
   oRest:setStatusCode(200)
   oRest:setResponse(oResposta)
+
 Return .T.

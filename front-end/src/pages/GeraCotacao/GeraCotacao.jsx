@@ -206,6 +206,13 @@ function GeraCotacao() {
               <Typography variant="h6">Total: {formatPrice(total)}</Typography>
             </div>
         </Card>
+        <Button
+          sx={{ width: '100%' }}
+          variant="contained"
+          color="success"
+        >
+          Enviar
+        </Button>
       </div>
     </div>
   );
