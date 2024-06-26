@@ -1,2 +1,2 @@
 # react-advpl-cria-pv
-Envio da cotação de compra ao fornecedor
+Envio da cotação de compra ao fornecedor.
