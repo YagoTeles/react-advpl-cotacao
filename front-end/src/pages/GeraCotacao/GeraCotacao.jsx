@@ -58,6 +58,8 @@ const tpfrete = [
 
 function GeraCotacao() {
   const { userData  } = useAuth();
+  const [total, setTotal] = useState(0)
+  const [tableData, setTableData] = useState(data);
 
   const infos = userData[0] 
   
@@ -72,7 +74,7 @@ function GeraCotacao() {
     cotacao: false,
     obs:true
   });
-  const [total, setTotal] = useState(0)
+  
 
   const toggleCollapse = (section) => {
     console.log(userData)
@@ -105,6 +107,16 @@ function GeraCotacao() {
       currency: 'BRL',
       minimumFractionDigits: 2,
     }).format(number);
+  };
+
+  const handleEdit = (newData) => {
+    let total = 0
+    setTableData(newData);
+    console.log(newData);
+    {newData.map((x) => (
+      total += x.valorTotal
+    ))}
+    setTotal(total)
   };
 
   return (
@@ -142,7 +154,7 @@ function GeraCotacao() {
             <Typography variant="h6">Numero: </Typography>
             <Typography variant="h6">Vencimento: </Typography>
             <br />
-            <TableCotacao data={data} />
+            <TableCotacao data={tableData} onEdit={handleEdit} />
           </Card>
         </Collapse>
         <Button
@@ -193,7 +205,7 @@ function GeraCotacao() {
                 ))}
             </TextField>
 
-            <TextField id="frete" label="Frete" variant="standard" size="small" />
+            <TextField id="frete" label="Frete" variant="standard" size="small" autoComplete="off"/>
             <TextField
                 id="condpag"
                 select

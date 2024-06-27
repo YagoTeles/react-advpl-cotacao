@@ -16,14 +16,14 @@ export const AuthProvider = ({ children }) => {
       if (response.status === 200) { // Verifica se o retorno foi 200
         setHash(hashcode);
         setUserData(response.data); // Supondo que 'userData' seja o array de JSON no retorno
-        return { success: true };
+        return { success: true, status: 200 };
       } else {
         console.error("Erro ao fazer login: status não é 200");
-        return { success: false };
+        return { success: false,status:  201};
       }
     } catch (error) {
       console.error("Erro ao fazer login:", error);
-      return { success: false };
+      return { success: false,status: 500 };
     }
   };
 

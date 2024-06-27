@@ -63,4 +63,85 @@ Function u_getDadosCotacao()
 
 Return .T.
 
+@POST("compras/atualiza-cotacao")
+Function u_postAtualizaCotacao()
 
+  Local oJson     
+  Local cHash  as character
+  Local oParams := oRest:getQueryRequest()
+   
+  IF oParams:HasProperty("hashcotacao")
+    cHash := oParams["hashcotacao"]
+    oJson := zIncluiProp(oDados,cHash)
+  ENDIF
+
+
+  oRest:setStatusCode(nStatus)
+  oRest:setResponse(oJson)
+
+Return .T.
+
+Static Function zIncluiProp(oDados,cHash)
+    Local aCabec := {}
+    Local aItens := {}
+    Local aAux   := {}
+    Local nA
+    Local oJson as json
+
+    PRIVATE lMsErroAuto := .F.
+
+    aCabec:={}
+    aItens:={}
+
+    dbSelectArea("SC8")
+    dbSetOrder(1)
+    SC8->(dbSeek(oDados["filial"]+PADR(oDados["numero"],TamSx3("C8_NUM")[1])))
+    
+    aAdd(aCabec,{"C8_FORNECE" ,oDados[""]})
+    aAdd(aCabec,{"C8_LOJA"    ,oDados[""]})
+    aAdd(aCabec,{"C8_COND"    ,oDados[""]})
+    aAdd(aCabec,{"C8_CONTATO" ,oDados[""]})
+    aAdd(aCabec,{"C8_EMISSAO" ,oDados[""]})
+    aAdd(aCabec,{"C8_TOTFRE"  ,oDados[""]})
+    aAdd(aCabec,{"C8_VALDESC" ,oDados[""]})
+    aAdd(aCabec,{"C8_OBS"     ,oDados[""]})
+    
+    For nA := 1 to Len(oDados["itens"])
+        oItens := oDados["itens"][nA]
+        aAux := {}
+
+        aAdd(aAux,{"C8_NUMPRO"  ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_PRODUTO" ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_ITEM"    ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_UM"      ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_QUANT"   ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_PRECO"   ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_DESC1"   ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_TOTAL"   ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_PRODUTO" ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_PRODUTO" ,oItens[""] ,Nil})
+        aAdd(aAux,{"C8_PRODUTO" ,oItens[""] ,Nil})
+
+        aadd(aItens,aAux)
+    Next nA
+
+    MSExecAuto({|v,x,y| MATA150(v,x,y)},aCabec,aItens,3)
+    
+    If !lMsErroAuto
+            ConOut("Cotação atualizada ")
+            oJson := {"Status":"Sucesso"}
+            oJson["Mensagem"] := "Cotacao atualizada"
+    Else
+            //MostraErro()
+            aErro := GetAutoGRLog()
+            cErro := ""
+            For nA := 1 to len(aErro)
+                cErro += aErro[nA] + chr(13)+chr(10)
+            Next nA
+            oJson := {"Status":"Erro"}
+            oJson := {"Mensagem": cErro}
+    EndIf
+
+    ConOut("Fim: " + Time())
+
+Return oJson

@@ -29,16 +29,16 @@ const Login = () => {
     if (result.success) {
       navigate('/gera-cotacao'); 
       
-    } else {
+    } else if (result.success && result.status === 201){
         setLoading(false);
-        handleClickOpen()
+        setOpen(true);
+    } 
+    else{
+      setLoading(false);
+      
     }
   };
   
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
   const handleClose = () => {
     setOpen(false);
   };
