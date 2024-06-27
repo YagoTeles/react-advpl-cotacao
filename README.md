@@ -29,7 +29,8 @@ Este projeto consiste em um sistema de integração entre o ERP Protheus, desenv
   - AdvPL/TLPP
   - Scheduler para agendamento de tarefas
   - API REST com Protheus
-
+  - Microsoft SQL Server
+    
 - **Frontend:**
   - React
   - Gerenciamento de estado com Redux (opcional)
