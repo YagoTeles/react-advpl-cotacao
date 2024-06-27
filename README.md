@@ -14,7 +14,15 @@ Este projeto consiste em um sistema de integração entre o ERP Protheus, desenv
   - Criação de endpoints RESTful para comunicação com o frontend em React.
   - Funcionalidades incluem consulta e atualização de dados de cotação no Protheus.
 
+- **Banco de Dados:**
+  - Microsoft SQL Server para armazenamento de dados.
+
 ### Frontend (React)
+
+- **Tecnologias Utilizadas:**
+  - Axios para comunicação com o backend.
+  - Material-UI (mui) para componentes de interface.
+  - React Router DOM para navegação entre páginas.
 
 - **Login de Fornecedores:**
   - Interface de login para fornecedores utilizando código recebido por e-mail.
@@ -22,20 +30,6 @@ Este projeto consiste em um sistema de integração entre o ERP Protheus, desenv
 - **Gerenciamento de Cotações:**
   - Tela para visualização e edição de dados de cotação.
   - Integração via API REST para atualização de dados no Protheus.
-
-## Tecnologias Utilizadas
-
-- **Backend:**
-  - AdvPL/TLPP
-  - Scheduler para agendamento de tarefas
-  - API REST com Protheus
-  - Microsoft SQL Server
-
-- **Frontend:**
-  - React
-  - Gerenciamento de estado com Redux (opcional)
-  - Requisições HTTP para comunicação com o backend
-
 
 
 ## Observações
