@@ -14,7 +14,7 @@ const TableCotacao = ({ data, onEdit }) => {
     const newData = [...editableData];
     newData[index][field] = newValue;
     // Calcula o valor total
-    newData[index].valorTotal = newData[index].quantidade * newData[index].valorUnitario * ( 1 - newData[index].desc/100);
+    newData[index].total = newData[index].quant * newData[index].preco * ( 1 - newData[index].desc/100);
     setEditableData(newData);
     onEdit(newData); // Chama a função onEdit com os dados atualizados
   };
@@ -27,6 +27,7 @@ const TableCotacao = ({ data, onEdit }) => {
       '-webkit-appearance': 'none',
       margin: 0,
     },
+    width:40
   });
 
   return (
@@ -37,8 +38,7 @@ const TableCotacao = ({ data, onEdit }) => {
             <TableCell>Item</TableCell>
             <TableCell>Código</TableCell>
             <TableCell>Produto</TableCell>
-            <TableCell>UM</TableCell>
-    
+            <TableCell>UM</TableCell>  
             <TableCell>Quantidade</TableCell>
             <TableCell>Vlr. Unitário</TableCell>
             <TableCell>Desconto</TableCell>
@@ -50,15 +50,15 @@ const TableCotacao = ({ data, onEdit }) => {
           {editableData.map((row, index) => (
             <TableRow key={index}>
               <TableCell>{row.item}</TableCell>
-              <TableCell>{row.codigo}</TableCell>
+              <TableCell>{row.codprod}</TableCell>
               <TableCell>{row.produto}</TableCell>
               <TableCell>{row.um}</TableCell>
-              <TableCell>{row.quantidade}</TableCell>
+              <TableCell>{row.quant}</TableCell>
               <TableCell>
                 <TextField
                   type="number"
-                  value={row.valorUnitario}
-                  onChange={(e) => handleEdit(index, 'valorUnitario', e.target.value)}
+                  value={row.preco}
+                  onChange={(e) => handleEdit(index, 'preco', e.target.value)}
                   variant="standard"
                   size="small"
                   sx={textFieldStyle}
@@ -76,7 +76,7 @@ const TableCotacao = ({ data, onEdit }) => {
               </TableCell>
 
               <TableCell>
-                {parseFloat(row.valorTotal).toFixed(2)}
+                {parseFloat(row.total).toFixed(2)}
               </TableCell>
               <TableCell>
                 <TextField

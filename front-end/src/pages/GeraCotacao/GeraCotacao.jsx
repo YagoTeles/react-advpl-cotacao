@@ -7,30 +7,7 @@ import TableCotacao from "../../components/TableCotacao/TableCotacao";
 import MenuItem from '@mui/material/MenuItem';
 import './geracotacao.css';
 import { useAuth } from '../../contexts/AuthContext';
-const data = [
-  {
-    item: 1,
-    codigo: '001',
-    produto: 'Produto A',
-    quantidade: 10,
-    um: 'UN',
-    valorUnitario: 20.0,
-    desc: 'Desconto A',
-    valorTotal: 200.0,
-    dataEntrega: '2023-06-26',
-  },
-  {
-    item: 2,
-    codigo: '002',
-    produto: 'Produto B',
-    quantidade: 5,
-    um: 'UN',
-    valorUnitario: 15.0,
-    desc: 'Desconto B',
-    valorTotal: 75.0,
-    dataEntrega: '2023-06-27',
-  },
-];
+
 const condpag = [
   {
     value: '001',
@@ -57,16 +34,17 @@ const tpfrete = [
 ];
 
 function GeraCotacao() {
-  const { userData  } = useAuth();
+  const { userData,hash  } = useAuth();
   const [total, setTotal] = useState(0)
-  const [tableData, setTableData] = useState(data);
+  const [tableData, setTableData] = useState(userData);
 
   const infos = userData[0] 
   
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    message: '',
+    filial: infos.filial,
+    numero: infos.num,
+    hash: hash,
+    itens: tableData
   });
 
   const [collapsed, setCollapsed] = useState({
@@ -118,7 +96,18 @@ function GeraCotacao() {
     ))}
     setTotal(total)
   };
-
+  function formatarData(data) {
+    // Certifique-se de que a data tenha 8 caracteres
+    if (data.length !== 8) {
+      return "Formato inválido";
+    }
+  
+    const ano = data.substring(0, 4);
+    const mes = data.substring(4, 6);
+    const dia = data.substring(6, 8);
+  
+    return `${dia}/${mes}/${ano}`;
+  }
   return (
     <div className="main-gera-cotacao">
       <div className="dados-cotacao">
@@ -132,12 +121,12 @@ function GeraCotacao() {
           Dados Fornecedor
         </Button>
         <Collapse in={!collapsed.fornecedor}>
-          <Card sx={{ padding: 1, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6">Nome: {infos.nome}</Typography>
-            <Typography variant="h6">Telefone: {infos.telefone} </Typography>
-            <Typography variant="h6">Endereço: </Typography>
-            <Typography variant="h6">Cidade: {infos.cidade}</Typography>
-            <Typography variant="h6">Estado: {infos.estado}</Typography>
+          <Card sx={{ padding: 1, display: 'flex', flexDirection: 'column'}}>
+            <Typography variant="subtitle1">Nome: {infos.nome}</Typography>
+            <Typography variant="subtitle1">Telefone: {infos.telefone} </Typography>
+            <Typography variant="subtitle1">Endereço: </Typography>
+            <Typography variant="subtitle1">Cidade: {infos.cidade}</Typography>
+            <Typography variant="subtitle1">Estado: {infos.estado}</Typography>
           </Card>
         </Collapse>
         <Button
@@ -151,8 +140,8 @@ function GeraCotacao() {
         </Button>
         <Collapse in={!collapsed.cotacao}>
           <Card sx={{ padding: 1, display: 'flex', flexDirection: 'column' }}>
-            <Typography variant="h6">Numero: </Typography>
-            <Typography variant="h6">Vencimento: </Typography>
+            <Typography variant="subtitle1">Numero: {infos.num}</Typography>
+            <Typography variant="subtitle1">Vencimento: {formatarData(infos.validade)}</Typography>
             <br />
             <TableCotacao data={tableData} onEdit={handleEdit} />
           </Card>
@@ -176,9 +165,7 @@ function GeraCotacao() {
         <form onSubmit={handleSubmit}>
           {}
         </form>
-      </div>
-
-      <div className="totais-cotacao">
+    
       <Button
           sx={{ width: '100%' }}
           variant="contained"
@@ -225,7 +212,7 @@ function GeraCotacao() {
      
           </div>
             <div className='resumo-cotacao'>
-              <Typography variant="h6">Total: {formatPrice(total)}</Typography>
+              <Typography variant="subtitle1">Total: {formatPrice(total)}</Typography>
             </div>
         </Card>
         <Button
@@ -235,7 +222,7 @@ function GeraCotacao() {
         >
           Enviar
         </Button>
-      </div>
+      </div> 
     </div>
   );
 }

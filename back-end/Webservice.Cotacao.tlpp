@@ -34,9 +34,12 @@ Function u_getDadosCotacao()
 
         oJson["filial"]   := (cAlias)->C8_FILIAL
         oJson["num"]      := (cAlias)->C8_NUM
-        oJson["produto"]  := (cAlias)->C8_PRODUTO
+        oJson["item"]     := (cAlias)->C8_ITEM
+        oJson["codprod"]  := (cAlias)->C8_PRODUTO
+        oJson["produto"]  := Posicione("SB1",1,xFilial("SB1") + (cAlias)->C8_PRODUTO,"B1_DESC")
         oJson["um"]       := (cAlias)->C8_UM
         oJson["quant"]    := (cAlias)->C8_QUANT
+        oJson["desc"]     := (cAlias)->C8_DESC
         oJson["preco"]    := (cAlias)->C8_PRECO
         oJson["total"]    := (cAlias)->C8_TOTAL
         oJson["fornece"]  := (cAlias)->C8_FORNECE
@@ -46,8 +49,8 @@ Function u_getDadosCotacao()
         oJson["nome"]     := Alltrim(SA2->A2_NOME)
         oJson["telefone"] := Alltrim(SA2->A2_TEL)
         oJson["endereco"] := Alltrim(SA2->A2_END)
-        oJson["cidade"]   := Alltrim(SA2->A2_COD_MUN)
-        oJson["estado"]   := Alltrim(SA2->A2_EST)
+        oJson["cidade"]   := Alltrim(Posicione("CC2",1,xFilial("CC2")+SA2->A2_EST+SA2->A2_COD_MUN,"CC2_MUN"))
+        oJson["estado"]   := Alltrim(Posicione("SX5",1,xFilial("SX5")+"12"+SA2->A2_EST,"X5_DESCRI"))
 
         aAdd(aResposta,oJson)
         FreeObj(oJson)
@@ -103,7 +106,7 @@ Static Function zIncluiProp(oDados,cHash)
     aAdd(aCabec,{"C8_CONTATO" ,oDados[""]})
     aAdd(aCabec,{"C8_EMISSAO" ,oDados[""]})
     aAdd(aCabec,{"C8_TOTFRE"  ,oDados[""]})
-    aAdd(aCabec,{"C8_VALDESC" ,oDados[""]})
+    aAdd(aCabec,{"C8_DESC"    ,oDados[""]})
     aAdd(aCabec,{"C8_OBS"     ,oDados[""]})
     
     For nA := 1 to Len(oDados["itens"])
